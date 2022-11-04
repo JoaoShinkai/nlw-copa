@@ -1,6 +1,8 @@
-import { Button, HStack, Text, useTheme, VStack } from 'native-base';
-import { X, Check } from 'phosphor-react-native';
 import { getName } from 'country-list';
+import dayjs from 'dayjs';
+import ptBR from 'dayjs/locale/pt-br';
+import { Button, HStack, Text, useTheme, VStack } from 'native-base';
+import { Check, Lock, X } from 'phosphor-react-native';
 
 import { Team } from './Team';
 
@@ -15,6 +17,7 @@ interface GuessProps {
 
 export interface GameProps {
   id: string;
+  date: string;
   firstTeamCountryCode: string;
   secondTeamCountryCode: string;
   guess: null | GuessProps;
@@ -25,10 +28,13 @@ interface Props {
   onGuessConfirm: () => void;
   setFirstTeamPoints: (value: string) => void;
   setSecondTeamPoints: (value: string) => void;
+  isGuessLoading: boolean;
 };
 
-export function Game({ data, setFirstTeamPoints, setSecondTeamPoints, onGuessConfirm }: Props) {
+export function Game({ data, setFirstTeamPoints, setSecondTeamPoints, onGuessConfirm, isGuessLoading }: Props) {
   const { colors, sizes } = useTheme();
+
+  const when = dayjs(data.date).locale(ptBR).format("DD [de] MMMM [de] YYYY [às] HH:00[h]");
 
   return (
     <VStack
@@ -46,7 +52,7 @@ export function Game({ data, setFirstTeamPoints, setSecondTeamPoints, onGuessCon
       </Text>
 
       <Text color="gray.200" fontSize="xs">
-        22 de Novembro de 2022 às 16:00h
+        {when}
       </Text>
 
       <HStack mt={4} w="full" justifyContent="space-between" alignItems="center">
@@ -66,16 +72,31 @@ export function Game({ data, setFirstTeamPoints, setSecondTeamPoints, onGuessCon
       </HStack>
 
       {
-        !data.guess &&
-        <Button size="xs" w="full" bgColor="green.500" mt={4} onPress={onGuessConfirm}>
-          <HStack alignItems="center">
-            <Text color="white" fontSize="xs" fontFamily="heading" mr={3}>
-              CONFIRMAR PALPITE
-            </Text>
+        !data.guess ?
 
-            <Check color={colors.white} size={sizes[4]} />
-          </HStack>
-        </Button>
+          new Date(data.date) < new Date() ?
+          <Button size="xs" w="full" bgColor="muted.700" mt={4} disabled>
+            <HStack alignItems="center">
+              <Text color="gray.500" fontSize="xs" fontFamily="heading" mr={3}>
+                PALPITES ENCERRADOS
+              </Text>
+                
+              <Lock color={colors.gray[500]} size={sizes[4]} />
+            </HStack>
+          </Button>
+          :
+          <Button size="xs" w="full" bgColor="green.500" mt={4} onPress={onGuessConfirm} isLoading={isGuessLoading}>
+            <HStack alignItems="center">
+              <Text color="white" fontSize="xs" fontFamily="heading" mr={3}>
+                CONFIRMAR PALPITE
+              </Text>
+                
+              <Check color={colors.white} size={sizes[4]} />
+            </HStack>
+          </Button>
+          :
+          ''
+        
       }
     </VStack>
   );

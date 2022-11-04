@@ -7,7 +7,7 @@ import { useAuth } from '../hooks/useAuth';
 
 export function SignIn(){
 
-    const { signIn, user } = useAuth();
+    const { signIn, isUserLoading } = useAuth();
 
     return(
         <Center flex={1} bgColor='gray.900' alignItems="center" justifyContent="center" p={7}>
@@ -19,6 +19,8 @@ export function SignIn(){
                 type="Secondary"
                 mt={12}
                 onPress={signIn}
+                isLoading={isUserLoading}
+                _loading={{ _spinner: { color: 'white' } }}
              />
             
             <Text

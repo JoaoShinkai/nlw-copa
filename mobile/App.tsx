@@ -5,7 +5,7 @@ import { Loading } from './src/components/Loading';
 import { THEME } from './src/styles/theme';
 
 import { AuthContextProvider } from './src/contexts/AuthContext';
-import { Pools } from './src/screens/Pools';
+import { Routes } from './src/routes';
 
 export default function App() {
 
@@ -17,7 +17,7 @@ export default function App() {
       <AuthContextProvider>
         <StatusBar barStyle='light-content' backgroundColor="transparent" translucent />
           {
-            fontsLoaded ? <Pools /> : <Loading /> 
+            fontsLoaded ? <Routes /> : <Loading /> 
           }
       </AuthContextProvider>
     </NativeBaseProvider>
